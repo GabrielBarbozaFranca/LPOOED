@@ -1,0 +1,96 @@
+Exercício: Sistema de Folha de Pagamento
+Desenvolva em Java um sistema para calcular o pagamento de diferentes tipos de trabalhadores de uma empresa, seguindo
+exatamente a estrutura de classes e interfaces descrita abaixo. O objetivo desta atividade é praticar interfaces, classe
+abstrata e herança em dois níveis (classe pai, classe filha e classe neta) — por isso a regra de negócio já está definida para
+você: concentre-se na modelagem orientada a objetos.
+A hierarquia de funcionários tem duas ramificações a partir de Funcionario: uma para quem é CLT (FuncionarioCLT →
+Gerente e Vendedor) e outra para quem é PJ (FuncionarioPJ), já que cada regime de contratação tem características
+diferentes.
+1. Interfaces
+Crie as duas interfaces a seguir:
+Pagavel
+com método double calcularPagamento();
+Bonificavel
+com método double calcularBonus();
+
+2. Classe abstrata Funcionario (implements Pagavel)
+Atributos privados:
+ nome (String)
+ cpf (String)
+ salarioBase (double)
+Deve conter:
+ Construtor recebendo os três atributos.
+ Getters e setters para os três atributos (ver observação sobre validação abaixo).
+ Método concreto exibirDados(): imprime nome, cpf e salário base no console.
+ Método calcularPagamento() abstrato — não implementar aqui, pois cada subtipo calcula de um jeito diferente.
+Observação — validação de valores
+O setter setSalarioBase(double salarioBase) não deve aceitar valores negativos. Se um valor negativo for informado, o
+atributo não deve ser alterado (mantenha o valor anterior) e uma mensagem deve ser impressa no console avisando
+que o valor informado é inválido.
+A mesma regra de validação (não aceitar valores negativos, mantendo o valor anterior e avisando no console) vale para
+todos os demais atributos numéricos do exercício: valeTransporte, percentualImposto, totalVendas, horasTrabalhadas
+e valorHora.
+
+3. Classe FuncionarioCLT extends Funcionario (abstrata)
+Atributo privado adicional:
+ valeTransporte (double) — valor fixo de R$ 220,00 para todo funcionário CLT. Defina esse valor no construtor da
+classe.
+Deve conter:
+
+ Construtor que recebe os dados do Funcionario e já define valeTransporte = 220.00.
+ Getter e setter para valeTransporte, seguindo a mesma regra de validação (não aceitar valor negativo).
+Essa classe continua abstrata e não implementa calcularPagamento() — quem faz isso são as classes netas Gerente e
+Vendedor, cada uma com sua própria regra.
+4. Classe FuncionarioPJ extends Funcionario (concreta)
+Representa um funcionário contratado como Pessoa Jurídica (PJ), em vez de CLT. Por isso, essa classe é filha direta de
+Funcionario e não passa por FuncionarioCLT — ela não tem vale-transporte nem os demais direitos de quem tem carteira
+assinada.
+Atributo privado adicional:
+ percentualImposto (double) — representa o percentual de imposto retido na nota fiscal, como fração (ex: 0.06 para
+6%). Deve ter getter e setter (mesma regra de validação: não aceitar valor negativo).
+calcularPagamento()
+calcularPagamento() = salarioBase - (salarioBase * percentualImposto)
+Pense sobre isso: por que FuncionarioPJ não deveria estender FuncionarioCLT? Reflita sobre o que cada classe representa
+antes de decidir onde encaixar novos atributos e métodos em uma hierarquia.
+5. Classe Gerente extends FuncionarioCLT, implements Bonificavel
+Não possui atributos adicionais. Deve implementar os métodos:
+calcularBonus()
+calcularBonus() = 20% do salarioBase
+calcularPagamento()
+calcularPagamento() = salarioBase + valeTransporte + calcularBonus()
+6. Classe Vendedor extends FuncionarioCLT
+Atributo privado adicional:
+ totalVendas (double) — com getter e setter (mesma regra de validação: não aceitar valor negativo).
+calcularPagamento()
+comissao = 5% do totalVendas
+calcularPagamento() = salarioBase + valeTransporte + comissao
+7. Classe PrestadorServico implements Pagavel (fora da hierarquia de
+Funcionario)
+Atributos privados:
+ nome (String)
+ horasTrabalhadas (double) — com getter e setter (não aceitar valor negativo).
+ valorHora (double) — com getter e setter (não aceitar valor negativo).
+calcularPagamento()
+
+calcularPagamento() = horasTrabalhadas * valorHora
+Repare que PrestadorServico não estende Funcionario — ele é um tipo de colaborador diferente, mas também sabe
+calcular seu próprio pagamento, por isso implementa a interface Pagavel.
+8. Classe Main (método main)
+No main, faça o seguinte:
+ Crie exatamente 1 objeto Gerente, 1 objeto Vendedor, 1 objeto FuncionarioPJ e 1 objeto PrestadorServico, cada um
+em sua própria variável (do tipo da própria classe, não da interface).
+ Para o Gerente, o Vendedor e o FuncionarioPJ, chame o método exibirDados().
+ Para os quatro objetos, chame o método calcularPagamento() individualmente (uma chamada por objeto) e exiba o
+resultado formatado, por exemplo:
+1. Pagamento do gerente: R$ 3.640,00
+2. Pagamento do vendedor: R$ 2.720,00
+3. Pagamento do PJ: R$ 4.700,00
+4. Pagamento do prestador de serviço: R$ 1.200,00
+
+Requisitos de qualidade de código
+ Todos os atributos devem ser private.
+ Todos os atributos devem ter getter e setter (mesmo os que não têm validação explícita de valor negativo, como
+nome e cpf).
+ Use @Override em todos os métodos sobrescritos ou implementados a partir de uma interface ou superclasse.
+ Nenhum atributo numérico pode assumir valor negativo — a validação deve estar nos setters, conforme explicado nas
+observações acima.
